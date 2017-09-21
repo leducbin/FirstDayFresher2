@@ -41,19 +41,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder holder, final int position) {
         holder.textView.setText(Integer.toString(data.get(position).getNumber()));
         holder.textView.setTextSize(20);
-	if(position == i){
-		holder.textView.setBackgroundResource(R.drawable.border_select);
-	}
-	    else
-	{
-		holder.textView.setBackgroundResource(0);
-    }
-	holder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context," " + position , Toast.LENGTH_LONG).show();
-            }
-        });
+        if(position == i){
+            holder.textView.setBackgroundResource(R.drawable.border_select);
+        }
+            else
+        {
+            holder.textView.setBackgroundResource(0);
+        }
 
     }
 

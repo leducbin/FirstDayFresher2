@@ -151,7 +151,8 @@ public class InfoFilm extends AppCompatActivity {
                 Picasso.with(InfoFilm.this).load(bg).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        drawerLayout.setBackground(new BitmapDrawable(bitmap));
+                        BitmapDrawable bg = new BitmapDrawable(getResources(),bitmap);
+                        drawerLayout.setBackground(bg);
                     }
 
                     @Override
@@ -216,7 +217,7 @@ public class InfoFilm extends AppCompatActivity {
 
                 JSONObject json_eps = new JSONObject(eps_reponse);
                 JSONArray data = json_eps.getJSONArray("data");
-                ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
+                final ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
                 for (int z=0;z<data.length();z++)
                 {
                     JSONObject eps_num = data.getJSONObject(z);
@@ -228,9 +229,21 @@ public class InfoFilm extends AppCompatActivity {
                 recyclerView.setHasFixedSize(true);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
                 recyclerView.setLayoutManager(layoutManager);
-
                 RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,0);
                 recyclerView.setAdapter(recyclerViewAdapter);
+                recyclerView.addOnItemTouchListener(
+                        new RecyclerItemClickListener(InfoFilm.this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override public void onItemClick(View view, int position) {
+                                Log.e(TAG,"view " + view);
+                                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,position);
+                                recyclerView.setAdapter(recyclerViewAdapter);
+                            }
+
+                            @Override public void onLongItemClick(View view, int position) {
+                                Toast.makeText(InfoFilm.this,position + "long length",Toast.LENGTH_LONG).show();
+                            }
+                        })
+                );
 
 
 
