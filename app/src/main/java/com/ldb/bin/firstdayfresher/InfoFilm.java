@@ -15,6 +15,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
@@ -37,6 +41,7 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class InfoFilm extends AppCompatActivity {
     public static final String railURL = "http://api.danet.vn/data/rails/go";
@@ -51,6 +56,7 @@ public class InfoFilm extends AppCompatActivity {
     ProgressDialog pDialog;
     DrawerLayout drawerLayout;
     TextView txttitle,txtclassification,txtdescription,txtgenres,txtactors,txtlanguage;
+    RecyclerView recyclerView,recyclerView_ep,recyclerView_related;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +106,7 @@ public class InfoFilm extends AppCompatActivity {
     {
 
         private String url;
-        private String reponse;
+        private String reponse,eps_reponse;
 
         public String getUrl() {
             return url;
@@ -125,6 +131,8 @@ public class InfoFilm extends AppCompatActivity {
 
             // Making a request to url and getting response
             this.reponse = sh.makeServiceCall("http://api.danet.vn/products/"+this.url);
+            HttpHandler eps = new HttpHandler(InfoFilm.this);
+            this.eps_reponse = eps.makeServiceCall("http://api.danet.vn/products/"+this.url+"/episodes");
 
             return null;
         }
@@ -206,6 +214,23 @@ public class InfoFilm extends AppCompatActivity {
                 }
                 txtlanguage.setText("Phụ đề " +subtitles +"\n" + "Lồng tiếng " +  audio);
 
+                JSONObject json_eps = new JSONObject(eps_reponse);
+                JSONArray data = json_eps.getJSONArray("data");
+                ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
+                for (int z=0;z<data.length();z++)
+                {
+                    JSONObject eps_num = data.getJSONObject(z);
+                    Episodes episodes = new Episodes();
+                    episodes.setNumber(eps_num.getInt("episode_number"));
+                    episodes.setArrayList(eps_num.toString());
+                    arrayList_ep.add(episodes);
+                }
+                recyclerView.setHasFixedSize(true);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
+                recyclerView.setLayoutManager(layoutManager);
+                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,0);
+                recyclerView.setAdapter(recyclerViewAdapter);
+
 
 
 
@@ -218,6 +243,7 @@ public class InfoFilm extends AppCompatActivity {
     private void AnhXa() {
 
         videoView = (VideoView) findViewById(R.id.videoview);
+
         listView = (RelativeLayout) findViewById(R.id.listview_video);
         imageView = (ImageView) findViewById(R.id.cencelview);
         drawerLayout = (DrawerLayout) findViewById(R.id.layout_video);
@@ -229,5 +255,7 @@ public class InfoFilm extends AppCompatActivity {
         txtgenres = (TextView) findViewById(R.id.genres);
         txtactors = (TextView) findViewById(R.id.actors);
         txtlanguage = (TextView) findViewById(R.id.language);
+        recyclerView = (RecyclerView) findViewById(R.id.recycleview_ep);
+        recyclerView_related = (RecyclerView) findViewById(R.id.recycleview_related);
     }
 }
