@@ -228,6 +228,7 @@ public class InfoFilm extends AppCompatActivity {
                 recyclerView.setHasFixedSize(true);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
                 recyclerView.setLayoutManager(layoutManager);
+
                 RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,0);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
