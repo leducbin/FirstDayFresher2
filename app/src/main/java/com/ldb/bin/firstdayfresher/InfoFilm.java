@@ -66,6 +66,7 @@ public class InfoFilm extends AppCompatActivity {
 
         Intent intent = getIntent();
         String href = intent.getStringExtra("href");
+        Log.e(TAG,"href " +href);
         String url = intent.getStringExtra("url");
         switch (url){
             case railURL:
@@ -75,6 +76,15 @@ public class InfoFilm extends AppCompatActivity {
                 textView.setText("THUÊ PHIM");
                 break;
             case railCineURL:
+                textView.setText("PHIM GÓI");
+                break;
+            case "AVOD":
+                textView.setText("MIỄN PHÍ");
+                break;
+            case "SVOD":
+                textView.setText("THUÊ PHIM");
+                break;
+            case "TVOD":
                 textView.setText("PHIM GÓI");
                 break;
         }

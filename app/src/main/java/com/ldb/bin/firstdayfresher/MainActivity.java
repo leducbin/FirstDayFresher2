@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         buttonLogin = (Button) findViewById(R.id.login);
         textView = (TextView) findViewById(R.id.railcine);
         textView2 = (TextView) findViewById(R.id.railbuffet);
-        imageView_search = (ImageView) findViewById(R.id.search);
+        imageView_search = (ImageView) findViewById(R.id.search_info_film);
         sharedPreferences = getSharedPreferences("dataLogin",MODE_PRIVATE);
 
     }

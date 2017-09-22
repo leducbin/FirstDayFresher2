@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -24,9 +25,10 @@ public class Search extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
     Toolbar toolbar;
     ProgressDialog pDialog;
-    ImageView imageClose,imageSearch;
+    ImageView imageClose,imageSearch,image_search;
     EditText editSearch;
     ListView listViewSearch;
+    TextView textView_title,textView_duration;
 
 
     @Override
@@ -67,6 +69,7 @@ public class Search extends AppCompatActivity {
         editSearch = (EditText) findViewById(R.id.searchtext);
         imageSearch = (ImageView) findViewById(R.id.search_click);
         listViewSearch = (ListView) findViewById(R.id.listview_search);
+
     }
 
     private class Search_info extends AsyncTask<Void, Void, Void>
@@ -131,7 +134,7 @@ public class Search extends AppCompatActivity {
                         arrayList_item.add(search_info);
                     }
                     ListViewSearchAdapter adapter = new ListViewSearchAdapter(Search.this,R.layout.dong_list_search,arrayList_item);
-
+                    listViewSearch.setAdapter(adapter);
                 }
 
             } catch (JSONException e) {
