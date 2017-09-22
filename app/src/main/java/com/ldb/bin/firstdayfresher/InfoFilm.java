@@ -106,7 +106,7 @@ public class InfoFilm extends AppCompatActivity {
     {
 
         private String url;
-        private String reponse,eps_reponse;
+        private String reponse,eps_reponse,rela_reponse;
 
         public String getUrl() {
             return url;
@@ -133,7 +133,8 @@ public class InfoFilm extends AppCompatActivity {
             this.reponse = sh.makeServiceCall("http://api.danet.vn/products/"+this.url);
             HttpHandler eps = new HttpHandler(InfoFilm.this);
             this.eps_reponse = eps.makeServiceCall("http://api.danet.vn/products/"+this.url+"/episodes");
-
+            HttpHandler rela = new HttpHandler(InfoFilm.this);
+            this.rela_reponse = rela.makeServiceCall("http://api.danet.vn/products/"+this.url+"/related");
             return null;
         }
 
@@ -244,9 +245,24 @@ public class InfoFilm extends AppCompatActivity {
                             }
                         })
                 );
-
-
-
+                JSONObject json_rela = new JSONObject(rela_reponse);
+                JSONArray data_rela = json_rela.getJSONArray("data");
+                ArrayList<Related> arrayList_re = new ArrayList<Related>();
+                for (int f=0;f<data_rela.length();f++)
+                {
+                    JSONObject ob_rela = data_rela.getJSONObject(f);
+                    JSONObject image_rela = ob_rela.getJSONObject("image");
+                    String image_url = image_rela.getString("base_uri");
+                    Related tmp = new Related();
+                    tmp.setData(ob_rela.toString());
+                    tmp.setHinhanh(image_url);
+                    arrayList_re.add(tmp);
+                }
+                recyclerView_related.setHasFixedSize(true);
+                LinearLayoutManager layoutManager_related = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
+                recyclerView_related.setLayoutManager(layoutManager_related);
+                RecyclerRelatedAdapter recyclerViewAdapter_related = new RecyclerRelatedAdapter(InfoFilm.this,arrayList_re);
+                recyclerView_related.setAdapter(recyclerViewAdapter_related);
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     String listname ="";
     TextView textViewdefault,textView,textView2,textViewmanhinh;
-    ImageView imageView;
+    ImageView imageView,imageView_search;
     int menu = 0;
     int REQUEST_CODE_EDIT = 123;
     int REQUEST_LOGOUT = 234;
@@ -155,6 +155,15 @@ public class MainActivity extends AppCompatActivity {
         int value = intent.getIntExtra("key",0);
         create(value);
 
+        imageView_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_search = new Intent(MainActivity.this,Search.class);
+                startActivity(intent_search);
+                overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+            }
+        });
+
 
         //new GetContacts().execute();
 
@@ -173,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         buttonLogin = (Button) findViewById(R.id.login);
         textView = (TextView) findViewById(R.id.railcine);
         textView2 = (TextView) findViewById(R.id.railbuffet);
+        imageView_search = (ImageView) findViewById(R.id.search);
         sharedPreferences = getSharedPreferences("dataLogin",MODE_PRIVATE);
 
     }
