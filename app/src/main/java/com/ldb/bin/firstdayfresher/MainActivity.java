@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                                             intent_searchtype.putExtra("offerings",jsonObject_sub.getString("offering"));
                                             intent_searchtype.putExtra("category",jsonObject_sub.getString("category"));
                                             intent_searchtype.putExtra("genre",jsonObject_sub.getString("genre"));
-                                            intent_searchtype.putExtra("url",url_title);
+                                            intent_searchtype.putExtra("url",url);
                                             MainActivity.this.startActivity(intent_searchtype);
                                             overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
                                         } catch (JSONException e) {

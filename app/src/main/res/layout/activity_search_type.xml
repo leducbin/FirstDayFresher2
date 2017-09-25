@@ -48,10 +48,12 @@
                     />
             </android.support.v7.widget.Toolbar>
             <GridView
+                android:verticalSpacing="3dp"
+                android:horizontalSpacing="3dp"
                 android:id="@+id/gridview_search"
                 android:numColumns="3"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="520dp"/>
         </LinearLayout>
     </ScrollView>
     <android.support.design.widget.NavigationView

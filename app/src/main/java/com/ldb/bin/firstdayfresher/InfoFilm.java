@@ -306,7 +306,6 @@ public class InfoFilm extends AppCompatActivity {
     private void AnhXa() {
 
         videoView = (VideoView) findViewById(R.id.videoview);
-
         listView = (RelativeLayout) findViewById(R.id.listview_video);
         imageView = (ImageView) findViewById(R.id.cencelview);
         drawerLayout = (DrawerLayout) findViewById(R.id.layout_video);
@@ -321,6 +320,6 @@ public class InfoFilm extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycleview_ep);
         recyclerView_related = (RecyclerView) findViewById(R.id.recycleview_related);
         textView_epi = (TextView) findViewById(R.id.epi);
-        linearLayout = (LinearLayout) findViewById(R.id.layout_recycle);
+        linearLayout = (LinearLayout) findViewById(R.id.linear_layout);
     }
 }
