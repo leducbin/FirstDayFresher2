@@ -22,7 +22,8 @@
         <activity android:name=".Register" />
         <activity android:name=".Profile" />
         <activity android:name=".InfoFilm" />
-        <activity android:name=".Search"></activity>
+        <activity android:name=".Search" />
+        <activity android:name=".SearchType"></activity>
     </application>
 
 </manifest>

@@ -55,8 +55,9 @@ public class InfoFilm extends AppCompatActivity {
     TextView textView;
     ProgressDialog pDialog;
     DrawerLayout drawerLayout;
-    TextView txttitle,txtclassification,txtdescription,txtgenres,txtactors,txtlanguage;
+    TextView txttitle,txtclassification,txtdescription,txtgenres,txtactors,txtlanguage,textView_epi;
     RecyclerView recyclerView,recyclerView_ep,recyclerView_related;
+    LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class InfoFilm extends AppCompatActivity {
         String href = intent.getStringExtra("href");
         Log.e(TAG,"href " +href);
         String url = intent.getStringExtra("url");
+        Log.e(TAG,"url " + url);
         switch (url){
             case railURL:
                 textView.setText("MIỄN PHÍ");
@@ -104,10 +106,15 @@ public class InfoFilm extends AppCompatActivity {
         {
             GetInfo getInfo = new GetInfo();
             getInfo.setUrl(separated[2]);
+            getInfo.setType(separated[1]);
             getInfo.execute();
         }
-        else
+        else if(separated[1].equals("movie"))
         {
+            GetInfo getInfo = new GetInfo();
+            getInfo.setUrl(separated[2]);
+            getInfo.setType(separated[1]);
+            getInfo.execute();
 
         }
     }
@@ -115,8 +122,16 @@ public class InfoFilm extends AppCompatActivity {
     private class GetInfo extends AsyncTask<Void, Void, Void>
     {
 
-        private String url;
+        private String url,type;
         private String reponse,eps_reponse,rela_reponse;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
 
         public String getUrl() {
             return url;
@@ -225,36 +240,44 @@ public class InfoFilm extends AppCompatActivity {
                     }
                 }
                 txtlanguage.setText("Phụ đề " +subtitles +"\n" + "Lồng tiếng " +  audio);
-
-                JSONObject json_eps = new JSONObject(eps_reponse);
-                JSONArray data = json_eps.getJSONArray("data");
-                final ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
-                for (int z=0;z<data.length();z++)
+                if(type.equals("series"))
                 {
-                    JSONObject eps_num = data.getJSONObject(z);
-                    Episodes episodes = new Episodes();
-                    episodes.setNumber(eps_num.getInt("episode_number"));
-                    episodes.setArrayList(eps_num.toString());
-                    arrayList_ep.add(episodes);
-                }
-                recyclerView.setHasFixedSize(true);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
-                recyclerView.setLayoutManager(layoutManager);
-                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,0);
-                recyclerView.setAdapter(recyclerViewAdapter);
-                recyclerView.addOnItemTouchListener(
-                        new RecyclerItemClickListener(InfoFilm.this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override public void onItemClick(View view, int position) {
-                                Log.e(TAG,"view " + view);
-                                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,position);
-                                recyclerView.setAdapter(recyclerViewAdapter);
-                            }
+                    JSONObject json_eps = new JSONObject(eps_reponse);
+                    JSONArray data = json_eps.getJSONArray("data");
+                    final ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
+                    for (int z=0;z<data.length();z++)
+                    {
+                        JSONObject eps_num = data.getJSONObject(z);
+                        Episodes episodes = new Episodes();
+                        episodes.setNumber(eps_num.getInt("episode_number"));
+                        episodes.setArrayList(eps_num.toString());
+                        arrayList_ep.add(episodes);
+                    }
+                    recyclerView.setHasFixedSize(true);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
+                    recyclerView.setLayoutManager(layoutManager);
+                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,0);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+                    recyclerView.addOnItemTouchListener(
+                            new RecyclerItemClickListener(InfoFilm.this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override public void onItemClick(View view, int position) {
+                                    Log.e(TAG,"view " + view);
+                                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,position);
+                                    recyclerView.setAdapter(recyclerViewAdapter);
+                                }
 
-                            @Override public void onLongItemClick(View view, int position) {
-                                Toast.makeText(InfoFilm.this,position + "long length",Toast.LENGTH_LONG).show();
-                            }
-                        })
-                );
+                                @Override public void onLongItemClick(View view, int position) {
+                                    Toast.makeText(InfoFilm.this,position + "long length",Toast.LENGTH_LONG).show();
+                                }
+                            })
+                    );
+                }
+                else if (type.equals("movie"))
+                {
+                    textView_epi.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                }
+
                 JSONObject json_rela = new JSONObject(rela_reponse);
                 JSONArray data_rela = json_rela.getJSONArray("data");
                 ArrayList<Related> arrayList_re = new ArrayList<Related>();
@@ -297,5 +320,7 @@ public class InfoFilm extends AppCompatActivity {
         txtlanguage = (TextView) findViewById(R.id.language);
         recyclerView = (RecyclerView) findViewById(R.id.recycleview_ep);
         recyclerView_related = (RecyclerView) findViewById(R.id.recycleview_related);
+        textView_epi = (TextView) findViewById(R.id.epi);
+        linearLayout = (LinearLayout) findViewById(R.id.layout_recycle);
     }
 }

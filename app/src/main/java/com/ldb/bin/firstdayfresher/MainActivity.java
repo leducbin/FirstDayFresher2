@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     ListView listMenu,listviewmain;
     Toolbar menuToolbar;
     DrawerLayout drawerLayout;
-    String listname ="";
     TextView textViewdefault,textView,textView2,textViewmanhinh;
     ImageView imageView,imageView_search;
     int menu = 0;
@@ -150,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(myIntent);
             }
         });
-
         Intent intent = getIntent();
         int value = intent.getIntExtra("key",0);
         create(value);
@@ -216,9 +214,17 @@ public class MainActivity extends AppCompatActivity {
      */
     private class GetContacts extends AsyncTask<Void, Void, Void> {
 
-        private MotionEvent event;
         private String url;
         private String reponse;
+        private String url_title;
+
+        public String getUrl_title() {
+            return url_title;
+        }
+
+        public void setUrl_title(String url_title) {
+            this.url_title = url_title;
+        }
 
         public void setURL(String url){
             this.url = url;
@@ -396,12 +402,29 @@ public class MainActivity extends AppCompatActivity {
 
                                     Subnavigation tmp = new Subnavigation();
                                     tmp.setName(title);
-
+                                    tmp.setData(subnavigation.toString());
                                     listNavigation.add(tmp);
 
                                 }
                                 SubnavigationAdapter subadapter = new SubnavigationAdapter(MainActivity.this,R.layout.dong_menu,listNavigation);
                                 listMenu.setAdapter(subadapter);
+                                listMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        try {
+                                            JSONObject jsonObject_sub = new JSONObject(listNavigation.get(position).getData());
+                                            Intent intent_searchtype = new Intent(MainActivity.this,SearchType.class);
+                                            intent_searchtype.putExtra("offerings",jsonObject_sub.getString("offering"));
+                                            intent_searchtype.putExtra("category",jsonObject_sub.getString("category"));
+                                            intent_searchtype.putExtra("genre",jsonObject_sub.getString("genre"));
+                                            intent_searchtype.putExtra("url",url_title);
+                                            MainActivity.this.startActivity(intent_searchtype);
+                                            overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                                        } catch (JSONException e) {
+
+                                        }
+                                    }
+                                });
 
                                 }else{
                                 //  xu li tuong tu de co list playlist
@@ -411,16 +434,13 @@ public class MainActivity extends AppCompatActivity {
                                     ListId listId = new ListId();
                                     listId.setName(name);
                                     listId.setId(id);
-
                                     listPlaylistID.add(listId);
-
                             }
-
                         }
-
                         for (int z=0;z<listPlaylistID.size();z++)
                         {
                             GetContacts tmp = new GetContacts();
+                            tmp.setUrl_title(this.url);
                             tmp.setURL(playlistURL+listPlaylistID.get(z).getId());
                             tmp.execute();
                         }
@@ -449,12 +469,13 @@ public class MainActivity extends AppCompatActivity {
                             HinhAnh img = new HinhAnh();
                             img.setHinh(poster);
                             img.setTen(title);
+                            img.setData(reponesePoster.toString());
                             listPlaylist.add(img);
                         }
                         arraylistReccycle.add(listPlaylist);
                         if(arraylistReccycle.size()== listPlaylistID.size())
                         {
-                            ListAdapter listAdapter = new ListAdapter(MainActivity.this,R.layout.dong_list_recycler,listPlaylistID,arraylistReccycle);
+                            ListAdapter listAdapter = new ListAdapter(MainActivity.this,R.layout.dong_list_recycler,listPlaylistID,arraylistReccycle,this.url_title);
                             listviewmain.setAdapter(listAdapter);
                         }
 

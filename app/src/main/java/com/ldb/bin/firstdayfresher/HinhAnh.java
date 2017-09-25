@@ -7,6 +7,15 @@ package com.ldb.bin.firstdayfresher;
 public class HinhAnh {
     private String Hinh;
     private String Ten;
+    private String Data;
+
+    public String getData() {
+        return Data;
+    }
+
+    public void setData(String data) {
+        Data = data;
+    }
 
     public String getHinh() {
         return Hinh;
