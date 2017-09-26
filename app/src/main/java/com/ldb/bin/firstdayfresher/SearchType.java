@@ -53,6 +53,7 @@ public class SearchType extends AppCompatActivity {
     Handler_m handler_m;
     ArrayList<Related> arrayList_list = new ArrayList<Related>();
     int page = 1;
+    GridViewAdapter gridViewAdapter = new GridViewAdapter(SearchType.this,R.layout.dong_grid_view);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -257,6 +258,7 @@ public class SearchType extends AppCompatActivity {
                     }
 
                 }
+
                 if (reponse_search != null && reponse_search.length() !=0 && pages == 1)
                 {
                     JSONObject jsonObject_list = new JSONObject(reponse_search);
@@ -269,12 +271,13 @@ public class SearchType extends AppCompatActivity {
                         tmp.setData(data_list.toString());
                         arrayList_list.add(tmp);
                     }
-                    GridViewAdapter gridViewAdapter = new GridViewAdapter(SearchType.this,R.layout.dong_grid_view,arrayList_list);
-                    gridViewAdapter.notifyDataSetChanged();
+                    gridViewAdapter.setData(arrayList_list);
                     gridView.setAdapter(gridViewAdapter);
 
                 }else
                 {
+                    if (pDialog.isShowing())
+                        pDialog.dismiss();
                     JSONObject jsonObject_list = new JSONObject(reponse_search);
                     JSONArray jsonArray_list = jsonObject_list.getJSONArray("data");
                     for (int k =0;k<jsonArray_list.length();k++)
@@ -285,7 +288,8 @@ public class SearchType extends AppCompatActivity {
                         tmp.setData(data_list.toString());
                         arrayList_list.add(tmp);
                     }
-                    gridView.removeView(foot_view);
+
+                    gridViewAdapter.notifyDataSetChanged();
                 }
                 gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
                     @Override
@@ -330,7 +334,10 @@ public class SearchType extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 0:
-                    gridView.addView(foot_view);
+                    pDialog = new ProgressDialog(SearchType.this);
+                    pDialog.setMessage("Please wait...");
+                    pDialog.setCancelable(false);
+                    pDialog.show();
                     break;
                 case 1:
                     GetContacts getContacts = new GetContacts();

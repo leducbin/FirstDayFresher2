@@ -12,48 +12,54 @@
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
+            android:id="@+id/linear_layout_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <android.support.v7.widget.Toolbar
+
                 android:id="@+id/toolbarmanhinhchinh"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="#7b95ed">
+
                 <ImageView
                     android:id="@+id/menubar"
                     android:layout_width="25sp"
                     android:layout_height="25sp"
                     android:layout_gravity="left"
-                    android:src="@drawable/ic_menu"
-                    />
+                    android:src="@drawable/ic_menu" />
+
                 <TextView
                     android:id="@+id/txtbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Miễn Phí"
-                    android:textSize="25sp"
-                    android:textColor="#ffffff"
                     android:layout_gravity="center"
-                    />
+                    android:text="Miễn Phí"
+                    android:textColor="#ffffff"
+                    android:textSize="25sp" />
+
                 <ImageView
                     android:id="@+id/search_info_film"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="right"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/search"
-                    />
+                    android:src="@drawable/search" />
             </android.support.v7.widget.Toolbar>
+
             <GridView
-                android:verticalSpacing="3dp"
-                android:horizontalSpacing="3dp"
                 android:id="@+id/gridview_search"
-                android:numColumns="3"
                 android:layout_width="match_parent"
-                android:layout_height="520dp"/>
+                android:layout_height="518dp"
+                android:horizontalSpacing="5dp"
+                android:fitsSystemWindows="true"
+                android:numColumns="3"
+                android:verticalSpacing="3dp" />
         </LinearLayout>
     </ScrollView>
     <android.support.design.widget.NavigationView
@@ -66,14 +72,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#ae02f937">
+            android:background="#ae02f937"
+            android:paddingTop="15dp">
             <TextView
+
                 android:text="MIỄN PHÍ"
                 android:id="@+id/railgo"
                 android:textSize="25sp"
                 android:textColor="#ff1115"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="15dp"
                 android:paddingBottom="5dp"
                 android:gravity="center"/>
             <TextView

@@ -37,8 +37,8 @@ import static android.R.attr.value;
 
 public class MainActivity extends AppCompatActivity {
 
-    final long DELAY_MS = 3000;//delay in milliseconds before task is to be executed
-    final long PERIOD_MS = 6000; // time in milliseconds between successive task executions.
+    final long DELAY_MS = 6000;//delay in milliseconds before task is to be executed
+    final long PERIOD_MS = 8000; // time in milliseconds between successive task executions.
     int currentPage = 0;
     Timer timer;
     private String TAG = MainActivity.class.getSimpleName();

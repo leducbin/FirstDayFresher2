@@ -48,7 +48,6 @@ public class ViewPagerAdapter extends PagerAdapter{
 
     private class ViewHolder{
         ImageView imageView;
-        TextView textView;
     }
 
 
@@ -57,7 +56,6 @@ public class ViewPagerAdapter extends PagerAdapter{
         layoutInflater = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = layoutInflater.inflate(R.layout.pager_items,container,false);
         ImageView imageView = (ImageView) itemView.findViewById(R.id.pager_image);
-        TextView textView = (TextView) itemView.findViewById(R.id.txtViewpages);
 
 
         //Set image and textview

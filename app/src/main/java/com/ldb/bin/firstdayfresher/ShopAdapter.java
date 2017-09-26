@@ -36,7 +36,6 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.txtName.setText(dataShops.get(position).getTen());
         Picasso.with(holder.imgHinh.getContext()).load(dataShops.get(position).getHinh()).into(holder.imgHinh);
 
     }
@@ -47,11 +46,9 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView txtName;
         ImageView imgHinh;
         public ViewHolder(View itemView) {
             super(itemView);
-            txtName = (TextView) itemView.findViewById(R.id.txtName);
             imgHinh = (ImageView) itemView.findViewById(R.id.imageviewHinhAnh);
         }
     }

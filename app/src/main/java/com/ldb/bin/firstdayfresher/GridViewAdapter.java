@@ -20,10 +20,17 @@ public class GridViewAdapter extends BaseAdapter {
     private int layout;
     private ArrayList<Related> data;
 
-    public GridViewAdapter(Context context, int layout, ArrayList<Related> data) {
+    public ArrayList<Related> getData() {
+        return data;
+    }
+
+    public void setData(ArrayList<Related> data) {
+        this.data = data;
+    }
+
+    public GridViewAdapter(Context context, int layout) {
         this.context = context;
         this.layout = layout;
-        this.data = data;
     }
 
     @Override
