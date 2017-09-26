@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -48,7 +49,7 @@ public class InfoFilm extends AppCompatActivity {
     public static final String railCineURL = "http://api.danet.vn/data/rails/cineplex";
     public static final String railBuffURL = "http://api.danet.vn/data/rails/buffet";
     private String TAG = MainActivity.class.getSimpleName();
-    VideoView videoView;
+    ImageView videoView;
     RelativeLayout listView;
     Toolbar toolbar;
     ImageView imageView,image_video;
@@ -243,7 +244,7 @@ public class InfoFilm extends AppCompatActivity {
                 if(type.equals("series"))
                 {
                     JSONObject json_eps = new JSONObject(eps_reponse);
-                    JSONArray data = json_eps.getJSONArray("data");
+                    final JSONArray data = json_eps.getJSONArray("data");
                     final ArrayList<Episodes> arrayList_ep = new ArrayList<Episodes>();
                     for (int z=0;z<data.length();z++)
                     {
@@ -253,6 +254,20 @@ public class InfoFilm extends AppCompatActivity {
                         episodes.setArrayList(eps_num.toString());
                         arrayList_ep.add(episodes);
                     }
+                    videoView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
+                            intent.putExtra("url",url);
+                            try {
+                                intent.putExtra("id",data.getJSONObject(0).getString("id"));
+                                InfoFilm.this.startActivity(intent);
+                                overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                            } catch (JSONException e) {
+                            }
+
+                        }
+                    });
                     recyclerView.setHasFixedSize(true);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(InfoFilm.this,LinearLayoutManager.HORIZONTAL,false);
                     recyclerView.setLayoutManager(layoutManager);
@@ -261,9 +276,21 @@ public class InfoFilm extends AppCompatActivity {
                     recyclerView.addOnItemTouchListener(
                             new RecyclerItemClickListener(InfoFilm.this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
                                 @Override public void onItemClick(View view, int position) {
-                                    Log.e(TAG,"view " + view);
                                     RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(InfoFilm.this,arrayList_ep,position);
                                     recyclerView.setAdapter(recyclerViewAdapter);
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(arrayList_ep.get(position).getArrayList());
+                                        String id_video_ep = jsonObject.getString("id");
+                                        Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
+                                        intent.putExtra("url",url);
+                                        intent.putExtra("id",id_video_ep);
+                                        Log.e(TAG,"data info "+ id_video_ep + url);
+                                        InfoFilm.this.startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                                    } catch (JSONException e) {
+
+                                    }
+
                                 }
 
                                 @Override public void onLongItemClick(View view, int position) {
@@ -274,8 +301,27 @@ public class InfoFilm extends AppCompatActivity {
                 }
                 else if (type.equals("movie"))
                 {
+                    JSONObject json_eps = new JSONObject(eps_reponse);
+                    final JSONArray data = json_eps.getJSONArray("data");
                     textView_epi.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
+                    videoView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
+                            intent.putExtra("url",url);
+                            try {
+                                intent.putExtra("id",data.getJSONObject(0).getString("id"));
+                                InfoFilm.this.startActivity(intent);
+                                overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                            } catch (JSONException e) {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(InfoFilm.this);
+                                dialog.setTitle("Hãy đăng nhập để được xem phim !").show();
+                            }
+
+                        }
+                    });
+
                 }
 
                 JSONObject json_rela = new JSONObject(rela_reponse);
@@ -305,7 +351,7 @@ public class InfoFilm extends AppCompatActivity {
 
     private void AnhXa() {
 
-        videoView = (VideoView) findViewById(R.id.videoview);
+        videoView = (ImageView) findViewById(R.id.videoview);
         listView = (RelativeLayout) findViewById(R.id.listview_video);
         imageView = (ImageView) findViewById(R.id.cencelview);
         drawerLayout = (DrawerLayout) findViewById(R.id.layout_video);

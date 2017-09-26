@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
-        android:background="#b11167a4">
+        android:background="#b1121516">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="#9f7b95ed">
+                android:background="#9f1e2026">
 
                 <TextView
                     android:id="@+id/txtbar_video"
@@ -46,11 +46,11 @@
                     />
             </android.support.v7.widget.Toolbar>
 
-            <VideoView
+            <ImageView
                 android:id="@+id/videoview"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:background="#ba454541"/>
+                android:layout_height="340dp"
+                android:background="@drawable/play"/>
 
             <RelativeLayout
                 android:id="@+id/listview_video"
