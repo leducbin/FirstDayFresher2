@@ -26,7 +26,8 @@
         <activity android:name=".InfoFilm" />
         <activity android:name=".Search" />
         <activity android:name=".SearchType" />
-        <activity android:name=".VideoPlay"></activity>
+        <activity android:name=".VideoPlay"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

@@ -15,9 +15,15 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.exoplayer.DefaultLoadControl;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
@@ -66,29 +72,46 @@ public class VideoPlay extends AppCompatActivity implements ManifestFetcher.Mani
     private TrackRenderer videoRenderer;
     private MediaCodecAudioTrackRenderer audioRenderer;
     private int h = 0;
+    private int k = 0;
     private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "VideoPlay on create");
         setContentView(R.layout.activity_video_play); // we import surface
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
 
         Intent intent_1 = getIntent();
         String id_video = intent_1.getStringExtra("url");
         String id_ep = intent_1.getStringExtra("id"); // we init buttons and listners
 
         textView = (TextView) findViewById(R.id.close);
-
         surface = (SurfaceView) findViewById(R.id.surface_view);
+
         Get_video get_video = new Get_video();
         get_video.setId_vi(id_video);
         get_video.setId_ep(id_ep);
         get_video.execute();
+
+
     }
 
     private class Get_video extends AsyncTask<Void, Void, Void>
     {
-        private String id_vi,id_ep,reponse;
+        private String id_vi,id_ep;
+        private String reponse_se;
+
+        public String getReponse_se() {
+            return reponse_se;
+        }
+
+        public void setReponse_se(String reponse_se) {
+            this.reponse_se = reponse_se;
+        }
 
         public String getId_vi() {
             return id_vi;
@@ -111,59 +134,81 @@ public class VideoPlay extends AppCompatActivity implements ManifestFetcher.Mani
             super.onPreExecute();
         }
 
+
         @Override
         protected Void doInBackground(Void... params) {
             HttpHandler sh = new HttpHandler(VideoPlay.this);
-
             // Making a request to url and getting response
-            this.reponse = sh.makeServiceCall("http://www.danet.vn/api/products/"+this.id_vi+"/playback/streams?device_id=undefined&device_type=web&variant=HD&episode_id="+id_ep);
+            this.reponse_se = sh.makeServiceCall("http://api.danet.vn/products/"+id_vi+"/playback/streams?device_id=undefined&device_type=web&variant=HD&episode_id="+id_ep);
+
+//            String url =  "http://www.danet.vn/api/products/"+this.id_vi+"/playback/streams?device_id=undefined&device_type=web&variant=HD&episode_id="+id_ep;
+//            Log.e(TAG, "url " + url);
+//            RequestQueue queue = Volley.newRequestQueue(VideoPlay.this);
+//            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET,url, null,
+//                    new Response.Listener<JSONObject>()
+//                    {
+//
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            // display response
+//                           Log.e(TAG, response.toString());
+//                        }
+//                    },
+//                    new Response.ErrorListener()
+//                    {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.d("Error.Response", String.valueOf(error));
+//                        }
+//                    }
+//            );
+//            queue.add(getRequest);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            try {
-                JSONObject json_ob = new JSONObject(reponse);
-                JSONObject streams = json_ob.getJSONObject("streams");
-                JSONObject hd = streams.getJSONObject("hd");
-                String video_url = hd.getString("src");//video url
-                player = ExoPlayer.Factory.newInstance(2);
-                playerControl = new PlayerControl(player); // we init player
-                am = (AudioManager) VideoPlay.this.getApplicationContext().getSystemService(Context.AUDIO_SERVICE); // for requesting audio
-                mainHandler = new Handler(); //handler required for hls
-                userAgent = Util.getUserAgent(VideoPlay.this, "VideoPlay"); //useragent required for hls
-                HlsPlaylistParser parser = new HlsPlaylistParser(); // init HlsPlaylistParser
-                playlistFetcher = new ManifestFetcher<>(video_url, new DefaultUriDataSource(VideoPlay.this, userAgent),
-                        parser); // url goes here, useragent and parser
-                playlistFetcher.singleLoad(mainHandler.getLooper(), VideoPlay.this); //with 'this' we'll implement ManifestFetcher.ManifestCallback<HlsPlaylist>
-                //listener with it will come two functions
-                surface.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(h == 0)
-                        {
-                            playerControl.start();
-                            h = 1;
+                try {
+                    JSONObject json_ob = new JSONObject(reponse_se);
+                    JSONObject streams = json_ob.getJSONObject("streams");
+                    JSONObject hd = streams.getJSONObject("hd");
+                    String video_url = hd.getString("src");//video url
+                    player = ExoPlayer.Factory.newInstance(2);
+                    playerControl = new PlayerControl(player); // we init player
+                    am = (AudioManager) VideoPlay.this.getApplicationContext().getSystemService(Context.AUDIO_SERVICE); // for requesting audio
+                    mainHandler = new Handler(); //handler required for hls
+                    userAgent = Util.getUserAgent(VideoPlay.this, "VideoPlay"); //useragent required for hls
+                    HlsPlaylistParser parser = new HlsPlaylistParser(); // init HlsPlaylistParser
+                    playlistFetcher = new ManifestFetcher<>(video_url, new DefaultUriDataSource(VideoPlay.this, userAgent),
+                            parser); // url goes here, useragent and parser
+                    playlistFetcher.singleLoad(mainHandler.getLooper(), VideoPlay.this); //with 'this' we'll implement ManifestFetcher.ManifestCallback<HlsPlaylist>
+                    //listener with it will come two functions
+                    surface.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(h == 0)
+                            {
+                                playerControl.start();
+                                h = 1;
+                            }
+                            else
+                            {
+                                playerControl.pause();
+                                h=0;
+                            }
                         }
-                        else
-                        {
+                    });
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             playerControl.pause();
-                            h=0;
+                            VideoPlay.this.finish();
                         }
+                    });
+                } catch (JSONException e) {
 
-                    }
-                });
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        playerControl.pause();
-                        VideoPlay.this.finish();
-                    }
-                });
-            } catch (JSONException e) {
-
-            }
+                }
         }
     }
 

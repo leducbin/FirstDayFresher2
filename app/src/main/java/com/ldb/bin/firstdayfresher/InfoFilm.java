@@ -257,9 +257,11 @@ public class InfoFilm extends AppCompatActivity {
                     videoView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Log.e(TAG, "series videoview click");
                             Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
                             intent.putExtra("url",url);
                             try {
+                                Log.e(TAG, "Start activity");
                                 intent.putExtra("id",data.getJSONObject(0).getString("id"));
                                 InfoFilm.this.startActivity(intent);
                                 overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
@@ -308,6 +310,7 @@ public class InfoFilm extends AppCompatActivity {
                     videoView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Log.e(TAG, "movie videoview click");
                             Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
                             intent.putExtra("url",url);
                             try {

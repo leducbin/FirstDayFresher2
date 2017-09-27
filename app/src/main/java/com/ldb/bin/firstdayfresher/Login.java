@@ -113,7 +113,7 @@ public class Login extends AppCompatActivity {
                 pDialog.dismiss();
             String response = null;
             RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, authURL, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if(response != null){
@@ -146,7 +146,9 @@ public class Login extends AppCompatActivity {
                     params.put("password",param_2.trim());
                     return params;
                 }
-            };
+            }
+            ;
+
             requestQueue.add(stringRequest);
             return null;
         }
