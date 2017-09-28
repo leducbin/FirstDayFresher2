@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="240dp"
     android:background="#00ffffff">
     <TextView
+        android:paddingTop="5dp"
         android:id="@+id/textrecycle"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:text="Text recycle"
         android:background="#00006aff"
         android:textSize="25sp"
         android:textColor="#f70000"
         />
     <android.support.v7.widget.RecyclerView
+        android:paddingTop="10dp"
         android:id="@+id/recycleview"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         />
 
 </LinearLayout>

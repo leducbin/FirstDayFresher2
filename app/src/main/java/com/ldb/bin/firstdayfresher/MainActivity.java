@@ -1,10 +1,20 @@
 package com.ldb.bin.firstdayfresher;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -24,6 +34,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -386,6 +399,25 @@ public class MainActivity extends AppCompatActivity {
                                             ivArrayDotsPager[p].setImageResource(R.drawable.unslectdraw);
                                         }
                                         ivArrayDotsPager[position].setImageResource(R.drawable.selectdraw);
+                                        String bg = listCarousel.get(position).getBanner();
+                                        Picasso.with(MainActivity.this).load(bg).into(new Target() {
+                                            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+                                            @Override
+                                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                                Bitmap blurredBitmap = BlurBuilder.blur( MainActivity.this, bitmap );
+                                                listviewmain.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+                                            }
+
+                                            @Override
+                                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                                            }
+
+                                            @Override
+                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                            }
+                                        });
                                     }
 
                                     @Override
@@ -548,5 +580,29 @@ public class MainActivity extends AppCompatActivity {
             buttonLogin.setText("Đăng Nhập - Đăng Ký");
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    private static class BlurBuilder {
+        private static final float BITMAP_SCALE = 0.7gitf;
+        private static final float BLUR_RADIUS = 12.5f;
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+        public static Bitmap blur(Context context, Bitmap image) {
+            int width = Math.round(image.getWidth() * BITMAP_SCALE);
+            int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+            Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+            RenderScript rs = RenderScript.create(context);
+            ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+            Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+            theIntrinsic.setRadius(BLUR_RADIUS);
+            theIntrinsic.setInput(tmpIn);
+            theIntrinsic.forEach(tmpOut);
+            tmpOut.copyTo(outputBitmap);
+
+            return outputBitmap;
+        }
     }
 }
