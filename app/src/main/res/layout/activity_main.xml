@@ -11,39 +11,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarmanhinhchinh"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="center">
-            <ImageView
-                android:id="@+id/menubar"
-                android:layout_width="20sp"
-                android:layout_height="20sp"
-                android:layout_gravity="left"
-                android:src="@drawable/ic_menu"
-                />
-            <TextView
-                android:id="@+id/txtbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Miễn Phí"
-                android:textSize="25sp"
-                android:textColor="#060606"
-                android:layout_gravity="center"
-                />
-            <ImageView
-                android:id="@+id/search_info_film"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center|right"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/search"
-                />
-        </android.support.v7.widget.Toolbar>
+
     <ScrollView
         android:id="@+id/scrollview"
-        android:layout_below="@id/toolbarmanhinhchinh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -61,6 +31,7 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
+                    android:background="#a1292e29"
                     android:layout_height="300dp" >
                 </android.support.v4.view.ViewPager>
 
@@ -80,6 +51,7 @@
             <ListView
                 android:id="@+id/listview_main"
                 android:layout_width="match_parent"
+                android:background="#a1292e29"
                 android:layout_height="2700dp"
                 >
             </ListView>
@@ -88,6 +60,38 @@
         </LinearLayout>
 
     </ScrollView>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarmanhinhchinh"
+            android:layout_below="@id/scrollview"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/menubar"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:layout_gravity="left"
+                android:src="@drawable/ic_menu"
+                />
+            <TextView
+                android:id="@+id/txtbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MIỄN PHÍ"
+                android:textSize="25sp"
+                android:textColor="#ffffff"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:id="@+id/search_info_film"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|right"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/search"
+                />
+        </android.support.v7.widget.Toolbar>
 
     </RelativeLayout>
     <android.support.design.widget.NavigationView

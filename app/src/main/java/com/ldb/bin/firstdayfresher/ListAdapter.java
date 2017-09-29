@@ -81,8 +81,6 @@ public class ListAdapter extends BaseAdapter {
         arr = listArray.get(position);
         holder.recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.recyclerView.getContext(), layoutManager.getOrientation());
-        holder.recyclerView.addItemDecoration(dividerItemDecoration);
         holder.recyclerView.setLayoutManager(layoutManager);
 //        Log.e(TAG,"Xem array coi" + arr.get(i).getTen());
         ShopAdapter shopAdapter = new ShopAdapter(context,arr);

@@ -201,27 +201,34 @@ public class InfoFilm extends AppCompatActivity {
                 JSONObject json_reponse = new JSONObject(reponse);
                 JSONObject image = json_reponse.getJSONObject("image");
                 JSONObject profile = image.getJSONObject("profile");
-                JSONArray poster = profile.getJSONArray("default");
-                String bg = poster.getJSONObject(3).getString("url");
-                Log.e(TAG,"url " + bg);
-                Picasso.with(InfoFilm.this).load(bg).into(new Target() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        Bitmap blurredBitmap = BlurBuilder.blur( InfoFilm.this, bitmap );
-                        scrollView.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+                JSONArray poster = profile.getJSONArray("poster");
+                for (int z=0;z<poster.length();z++)
+                {
+
+                    Log.e(TAG,"url " + poster.getJSONObject(z).toString());
+                    if(poster.getJSONObject(z).getInt("width") == 210){
+                        String bg_info = poster.getJSONObject(z).getString("url");
+                        Picasso.with(InfoFilm.this).load(bg_info).into(new Target() {
+                            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                Bitmap blurredBitmap = BlurBuilder.blur( InfoFilm.this, bitmap );
+                                scrollView.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
                     }
+                }
 
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
 
                 txttitle.setText( json_reponse.getString("title"));
                 txttitle.setTextSize(26);

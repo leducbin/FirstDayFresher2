@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.R.attr.centerY;
 import static android.R.attr.value;
 
 public class MainActivity extends AppCompatActivity {
@@ -405,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                                             @Override
                                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                                 Bitmap blurredBitmap = BlurBuilder.blur( MainActivity.this, bitmap );
-                                                listviewmain.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+                                                drawerLayout.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
                                             }
 
                                             @Override
@@ -501,6 +502,7 @@ public class MainActivity extends AppCompatActivity {
                             HinhAnh img = new HinhAnh();
                             img.setHinh(poster);
                             img.setTen(title);
+                            Log.e(TAG,"name " + title);
                             img.setData(reponesePoster.toString());
                             listPlaylist.add(img);
                         }
@@ -582,8 +584,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     private static class BlurBuilder {
-        private static final float BITMAP_SCALE = 0.7gitf;
-        private static final float BLUR_RADIUS = 12.5f;
+        private static final float BITMAP_SCALE = 0.4f;
+        private static final float BLUR_RADIUS = 7.5f;
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
         public static Bitmap blur(Context context, Bitmap image) {
