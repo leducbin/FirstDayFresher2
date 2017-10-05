@@ -116,7 +116,7 @@
                 android:paddingBottom="5dp"
                 android:gravity="center"/>
             <TextView
-                android:text="PHIM GÓI"
+                android:text="THUÊ PHIM"
                 android:id="@+id/railcine"
                 android:textSize="25sp"
                 android:textColor="#ff1115"
@@ -126,7 +126,7 @@
                 android:gravity="center"
                 />
             <TextView
-                android:text="THUÊ PHIM"
+                android:text="PHIM GÓI"
                 android:id="@+id/railbuffet"
                 android:textSize="25sp"
                 android:textColor="#ff1115"

@@ -296,11 +296,11 @@ public class MainActivity extends AppCompatActivity {
                         textViewmanhinh.setText("MIỄN PHÍ");
                     }else if (this.url == railCineURL)
                     {
-                        textViewmanhinh.setText("PHIM GÓI");
+                        textViewmanhinh.setText("THUÊ PHIM");
                     }
                     else
                     {
-                        textViewmanhinh.setText("THUÊ PHIM");
+                        textViewmanhinh.setText("PHIM GÓI");
                     }
                     // if init view show circle loading
                     if (pDialog.isShowing())
@@ -502,7 +502,6 @@ public class MainActivity extends AppCompatActivity {
                             HinhAnh img = new HinhAnh();
                             img.setHinh(poster);
                             img.setTen(title);
-                            Log.e(TAG,"name " + title);
                             img.setData(reponesePoster.toString());
                             listPlaylist.add(img);
                         }

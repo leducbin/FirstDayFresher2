@@ -99,19 +99,19 @@ public class InfoFilm extends AppCompatActivity {
                 textView.setText("MIỄN PHÍ");
                 break;
             case railBuffURL:
-                textView.setText("THUÊ PHIM");
+                textView.setText("PHIM GÓI");
                 break;
             case railCineURL:
-                textView.setText("PHIM GÓI");
+                textView.setText("THUÊ PHIM");
                 break;
             case "AVOD":
                 textView.setText("MIỄN PHÍ");
                 break;
             case "SVOD":
-                textView.setText("THUÊ PHIM");
+                textView.setText("PHIM GÓI");
                 break;
             case "TVOD":
-                textView.setText("PHIM GÓI");
+                textView.setText("THUÊ PHIM");
                 break;
         }
 
@@ -201,6 +201,8 @@ public class InfoFilm extends AppCompatActivity {
                 JSONObject json_reponse = new JSONObject(reponse);
                 JSONObject image = json_reponse.getJSONObject("image");
                 JSONObject profile = image.getJSONObject("profile");
+                String package_type = json_reponse.getString("package_type");
+                Log.e(TAG,"package type "+ package_type);
                 JSONArray poster = profile.getJSONArray("poster");
                 for (int z=0;z<poster.length();z++)
                 {
@@ -278,7 +280,7 @@ public class InfoFilm extends AppCompatActivity {
                     }
                 }
                 txtlanguage.setText("Phụ đề " +subtitles +"\n" + "Lồng tiếng " +  audio);
-                if(type.equals("series"))
+                if(type.equals("series") && package_type.equals("AVOD"))
                 {
                     JSONObject json_eps = new JSONObject(eps_reponse);
                     final JSONArray data = json_eps.getJSONArray("data");
@@ -338,7 +340,7 @@ public class InfoFilm extends AppCompatActivity {
                             })
                     );
                 }
-                else if (type.equals("movie"))
+                else if (type.equals("movie") && package_type.equals("SVOD"))
                 {
                     JSONObject json_eps = new JSONObject(eps_reponse);
                     final JSONArray data = json_eps.getJSONArray("data");
@@ -383,8 +385,61 @@ public class InfoFilm extends AppCompatActivity {
                                         if(response != null){
                                             try {
                                                 JSONObject jsonObject_user = new JSONObject(response);
-                                                Toast.makeText(InfoFilm.this,"Đã có trả về rồi",Toast.LENGTH_LONG).show();
-                                                Log.e(TAG, "data " + jsonObject_user);
+                                                JSONArray array_offerings = jsonObject_user.getJSONArray("offerings");
+                                                int i = 0;
+                                                for (int x = 0; x<array_offerings.length();x++) {
+                                                    JSONObject ob_offerings = array_offerings.getJSONObject(x);
+                                                    if(ob_offerings.getBoolean("entitled") == true)
+                                                    {
+                                                        i = 1;
+                                                    }
+                                                }
+                                                if (i == 1)
+                                                {
+                                                    Toast.makeText(InfoFilm.this,"Oke men",Toast.LENGTH_LONG).show();
+                                                }
+                                                else if(i==0)
+                                                {
+                                                    AlertDialog.Builder builder;
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                        builder = new AlertDialog.Builder(InfoFilm.this, android.R.style.Theme_Material_Dialog_Alert);
+                                                    } else {
+                                                        builder = new AlertDialog.Builder(InfoFilm.this);
+                                                    }
+                                                    builder.setTitle("Bạn phải mua phim! YES! Để mua...")
+                                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    AlertDialog.Builder builder;
+                                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                                        builder = new AlertDialog.Builder(InfoFilm.this, android.R.style.Theme_Material_Dialog_Alert);
+                                                                    } else {
+                                                                        builder = new AlertDialog.Builder(InfoFilm.this);
+                                                                    }
+                                                                    builder.setTitle("Đăng ký phim gói")
+                                                                            .setPositiveButton("Bằng Điểm", new DialogInterface.OnClickListener() {
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    Intent intent = new Intent(InfoFilm.this, SubscriptionsList.class);
+                                                                                    startActivityForResult(intent,REQUEST_CODE_EDIT);
+                                                                                    overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                                                                                }
+                                                                            })
+                                                                            .setPositiveButton("Bằng Tiền", new DialogInterface.OnClickListener() {
+                                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                                }
+                                                                            })
+                                                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                                                            .show();
+                                                                }
+                                                            })
+                                                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    // do nothing
+                                                                }
+                                                            })
+                                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                                            .show();
+                                                }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
