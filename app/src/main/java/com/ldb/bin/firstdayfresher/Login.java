@@ -111,9 +111,10 @@ public class Login extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            String response = null;
+            String response = "http://api.danet.vn/user/authenticate";
+            Log.e(TAG, param_1 + param_2 + " data");
             RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, response, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if(response != null){

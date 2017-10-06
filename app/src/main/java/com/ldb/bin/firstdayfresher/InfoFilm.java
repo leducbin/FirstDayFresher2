@@ -149,7 +149,7 @@ public class InfoFilm extends AppCompatActivity {
     private class GetInfo extends AsyncTask<Void, Void, Void>
     {
 
-        private String url,type;
+        private String url_id,type;
         private String reponse,eps_reponse,rela_reponse;
 
         public String getType() {
@@ -161,11 +161,11 @@ public class InfoFilm extends AppCompatActivity {
         }
 
         public String getUrl() {
-            return url;
+            return url_id;
         }
 
         public void setUrl(String url) {
-            this.url = url;
+            this.url_id = url;
         }
 
         @Override
@@ -182,11 +182,11 @@ public class InfoFilm extends AppCompatActivity {
             HttpHandler sh = new HttpHandler(InfoFilm.this);
 
             // Making a request to url and getting response
-            this.reponse = sh.makeServiceCall("http://api.danet.vn/products/"+this.url);
+            this.reponse = sh.makeServiceCall("http://api.danet.vn/products/"+this.url_id);
             HttpHandler eps = new HttpHandler(InfoFilm.this);
-            this.eps_reponse = eps.makeServiceCall("http://api.danet.vn/products/"+this.url+"/episodes");
+            this.eps_reponse = eps.makeServiceCall("http://api.danet.vn/products/"+this.url_id+"/episodes");
             HttpHandler rela = new HttpHandler(InfoFilm.this);
-            this.rela_reponse = rela.makeServiceCall("http://api.danet.vn/products/"+this.url+"/related");
+            this.rela_reponse = rela.makeServiceCall("http://api.danet.vn/products/"+this.url_id+"/related");
             Log.e(TAG,"data rela" + rela_reponse);
             return null;
         }
@@ -298,7 +298,7 @@ public class InfoFilm extends AppCompatActivity {
                         public void onClick(View v) {
                             Log.e(TAG, "series videoview click");
                             Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
-                            intent.putExtra("url",url);
+                            intent.putExtra("url",url_id);
                             try {
                                 Log.e(TAG, "Start activity");
                                 intent.putExtra("id",data.getJSONObject(0).getString("id"));
@@ -323,9 +323,9 @@ public class InfoFilm extends AppCompatActivity {
                                         JSONObject jsonObject = new JSONObject(arrayList_ep.get(position).getArrayList());
                                         String id_video_ep = jsonObject.getString("id");
                                         Intent intent = new Intent(InfoFilm.this,VideoPlay.class);
-                                        intent.putExtra("url",url);
+                                        intent.putExtra("url",url_id);
                                         intent.putExtra("id",id_video_ep);
-                                        Log.e(TAG,"data info "+ id_video_ep + url);
+                                        Log.e(TAG,"data info "+ id_video_ep + url_id);
                                         InfoFilm.this.startActivity(intent);
                                         overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
                                     } catch (JSONException e) {
@@ -377,7 +377,7 @@ public class InfoFilm extends AppCompatActivity {
                             else if(sharedPreferences.getString("accessToken","") != null)
                             {
                                 final String token_user = sharedPreferences.getString("accessToken","");
-                                String url_user = "http://api.danet.vn/products/1692";
+                                String url_user = "http://api.danet.vn/products/"+url_id;
                                 RequestQueue requestQueue = Volley.newRequestQueue(InfoFilm.this);
                                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url_user, new Response.Listener<String>() {
                                     @Override
@@ -423,9 +423,11 @@ public class InfoFilm extends AppCompatActivity {
                                                                                     overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
                                                                                 }
                                                                             })
-                                                                            .setPositiveButton("Bằng Tiền", new DialogInterface.OnClickListener() {
-                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                            .setNeutralButton("Bằng Tiền",new DialogInterface.OnClickListener(){
 
+                                                                                @Override
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    Toast.makeText(InfoFilm.this,"Bằng Tiền",Toast.LENGTH_LONG).show();
                                                                                 }
                                                                             })
                                                                             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -439,6 +441,146 @@ public class InfoFilm extends AppCompatActivity {
                                                             })
                                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                                             .show();
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    }
+                                },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        }
+                                ){
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String>  params = new HashMap<String, String>();
+                                        params.put("Movideo-Auth", token_user);
+                                        return params;
+                                    }
+                                }
+                                        ;
+
+                                requestQueue.add(stringRequest);
+                            }
+
+
+                        }
+                    });
+
+                }else if (type.equals("movie") && package_type.equals("TVOD"))
+                {
+                    JSONObject json_eps = new JSONObject(eps_reponse);
+                    final JSONArray data = json_eps.getJSONArray("data");
+                    textView_epi.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    videoView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(sharedPreferences.getString("accessToken","").equals(""))
+                            {
+                                AlertDialog.Builder builder;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    builder = new AlertDialog.Builder(InfoFilm.this, android.R.style.Theme_Material_Dialog_Alert);
+                                } else {
+                                    builder = new AlertDialog.Builder(InfoFilm.this);
+                                }
+                                builder.setTitle("Hãy đăng nhập để xem hoặc mua phim!!!")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(InfoFilm.this, Login.class);
+                                                startActivityForResult(intent,REQUEST_CODE_EDIT);
+                                                overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+//
+                            }
+                            else if(sharedPreferences.getString("accessToken","") != null)
+                            {
+                                final String token_user = sharedPreferences.getString("accessToken","");
+                                String url_user = "http://api.danet.vn/products/"+ url_id;
+                                RequestQueue requestQueue = Volley.newRequestQueue(InfoFilm.this);
+                                StringRequest stringRequest = new StringRequest(Request.Method.GET, url_user, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        if(response != null){
+                                            try {
+                                                JSONObject jsonObject_user = new JSONObject(response);
+                                                JSONArray array_offerings = jsonObject_user.getJSONArray("offerings");
+                                                int i = 0;
+                                                for (int x = 0; x<array_offerings.length();x++) {
+                                                    JSONObject ob_offerings = array_offerings.getJSONObject(x);
+                                                    if(ob_offerings.getBoolean("entitled") == true)
+                                                    {
+                                                        i = 1;
+                                                    }
+                                                }
+                                                if (i == 1)
+                                                {
+                                                    Toast.makeText(InfoFilm.this,"Oke men",Toast.LENGTH_LONG).show();
+                                                }
+                                                else if(i==0 )
+                                                {
+
+
+                                                    if( Float.parseFloat(sharedPreferences.getString("credits","0")) >= Float.valueOf(array_offerings.getJSONObject(0).getString("price")) )
+                                                    {
+                                                        Toast.makeText(InfoFilm.this,"Đủ tiền thanh toán r!",Toast.LENGTH_LONG).show();
+                                                    }
+                                                    else
+                                                    {
+                                                        AlertDialog.Builder builder;
+                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                            builder = new AlertDialog.Builder(InfoFilm.this, android.R.style.Theme_Material_Dialog_Alert);
+                                                        } else {
+                                                            builder = new AlertDialog.Builder(InfoFilm.this);
+                                                        }
+                                                        builder.setTitle("Bạn không đủ điểm.").setMessage("Bạn không đủ " + array_offerings.getJSONObject(0).getString("price") + " điểm để thuê phim này!")
+                                                                .setPositiveButton("Nạp Điểm", new DialogInterface.OnClickListener() {
+                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                        AlertDialog.Builder builder;
+                                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                                            builder = new AlertDialog.Builder(InfoFilm.this, android.R.style.Theme_Material_Dialog_Alert);
+                                                                        } else {
+                                                                            builder = new AlertDialog.Builder(InfoFilm.this);
+                                                                        }
+                                                                        builder.setTitle("Nạp điểm DANET")
+                                                                                .setPositiveButton("Bằng Tiền", new DialogInterface.OnClickListener() {
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        Toast.makeText(InfoFilm.this,"Bằng Tiền",Toast.LENGTH_LONG).show();
+                                                                                    }
+                                                                                })
+                                                                                .setNeutralButton("Nạp Thẻ ĐT",new DialogInterface.OnClickListener(){
+
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        Toast.makeText(InfoFilm.this,"Bằng THẻ",Toast.LENGTH_LONG).show();
+                                                                                    }
+                                                                                })
+                                                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                                                .show();
+                                                                    }
+                                                                })
+                                                                .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                        // do nothing
+                                                                    }
+                                                                })
+                                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                                .show();
+                                                    }
+
                                                 }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
