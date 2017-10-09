@@ -16,12 +16,7 @@
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp">
-        <ImageView
-            android:layout_alignRight="@id/txtdanet"
-            android:id="@+id/close"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/x"/>
+
         <TextView
             android:id="@+id/txtdanet"
             android:layout_width="match_parent"
@@ -32,6 +27,12 @@
             android:textColor="#0cbf5a"
             android:fontFamily="true"
             />
+        <ImageView
+            android:layout_alignRight="@id/txtdanet"
+            android:id="@+id/close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/x"/>
         <TextView
             android:id="@+id/txt_register"
             android:layout_below="@id/txtdanet"
@@ -74,6 +75,7 @@
             android:layout_margin="5dp"
             android:id="@+id/identifier"
             android:layout_width="match_parent"
+            android:inputType="textEmailAddress"
             android:hint="Địa chỉ email"
             android:layout_height="wrap_content" />
         <EditText

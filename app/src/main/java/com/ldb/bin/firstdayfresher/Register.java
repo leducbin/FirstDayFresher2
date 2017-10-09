@@ -3,11 +3,14 @@ package com.ldb.bin.firstdayfresher;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +37,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
     RelativeLayout relativeLayout_bg;
@@ -58,7 +63,7 @@ public class Register extends AppCompatActivity {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "dd/mm/yyyy"; //In which you need put here
+                String myFormat = "dd/MM/yyyy"; //In which you need put here
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("vi","VN"));
 
                 date_of_birth.setText(sdf.format(myCalendar.getTime()));
@@ -75,6 +80,30 @@ public class Register extends AppCompatActivity {
             }
         });
 
+        identifier.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e("thuxem nao","data "+isEmailValid(identifier.getText().toString().trim()));
+                if(!isEmailValid(identifier.getText().toString().trim()))
+                {
+                   identifier.setBackgroundColor(0xFF00FF00);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(isEmailValid(identifier.getText().toString().trim()))
+                {
+                    identifier.setBackgroundColor(Color.BLUE);
+                }
+            }
+        });
+
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,25 +115,19 @@ public class Register extends AppCompatActivity {
                         && password.getText().toString().trim() != null
                         && password_confirmation.getText().toString().trim() != null
                         && checkbox_confirm.isChecked() == true
-                        && password_confirmation.getText().toString().trim() == password.getText().toString().trim()
-                ){
+                ) {
+                    Log.e("asfdafdfa","data test " +  isEmailValid(identifier.getText().toString().trim()));
+
+                    if (password_confirmation.getText().toString().trim().equals(password.getText().toString().trim())) {
                     String response = "http://api.danet.vn/user";
                     RequestQueue requestQueue = Volley.newRequestQueue(Register.this);
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, response, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            if(response != null){
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    Toast.makeText(Register.this,"Bạn đã đăng ký thành công!",Toast.LENGTH_LONG).show();
-                                    finish();
-                                    Intent intent = new Intent(Register.this,MainActivity.class);
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_down,R.anim.slide_up);
+                            if (response != null) {
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                Toast.makeText(Register.this, "Bạn đã đăng ký thành công! Hãy đăng nhập lại vào hệ thống!!", Toast.LENGTH_LONG).show();
+                                finish();
 
                             }
                         }
@@ -112,27 +135,44 @@ public class Register extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(Register.this," Đăng ký xảy ra lỗi, kiểm tra lại kết nối! ",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Register.this, " Đăng ký xảy ra lỗi, kiểm tra lại kết nối! ", Toast.LENGTH_LONG).show();
                                 }
                             }
-                    ){
+                    ) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
-                            params.put("given_name",given_name.getText().toString().trim());
-                            params.put("family_name",family_name.getText().toString().trim());
+                            params.put("given_name", given_name.getText().toString().trim());
+                            params.put("family_name", family_name.getText().toString().trim());
                             params.put("identifier", identifier.getText().toString().trim());
-                            params.put("phone",phone.getText().toString().trim());
-                            params.put("provider","movideo");
-                            params.put("date_of_birth","");//dd/mm/yyyy
+                            params.put("phone", phone.getText().toString().trim());
+                            params.put("provider", "movideo");
+                            params.put("date_of_birth", date_of_birth.getText().toString().trim());//dd/mm/yyyy
                             params.put("password", password.getText().toString().trim());
-                            params.put("password_confirmation","");
+                            params.put("password_confirmation", password_confirmation.getText().toString().trim());
                             return params;
                         }
-                    }
-                            ;
+                    };
 
                     requestQueue.add(stringRequest);
+                    }else
+                    {
+                        AlertDialog.Builder builder;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            builder = new AlertDialog.Builder(Register.this, android.R.style.Theme_Material_Dialog_Alert);
+                        } else {
+                            builder = new AlertDialog.Builder(Register.this);
+                        }
+                        builder.setTitle("Bạn chưa nhập chính xác mật khẩu xác nhận!!!")
+                                .setNegativeButton("Oke", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    }
+
                 }else
                 {
                     AlertDialog.Builder builder;
@@ -165,5 +205,18 @@ public class Register extends AppCompatActivity {
         password_confirmation = (EditText) findViewById(R.id.password_confirmation);
         checkbox_confirm = (CheckBox) findViewById(R.id.checkbox_register);
         register = (Button) findViewById(R.id.register);
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
