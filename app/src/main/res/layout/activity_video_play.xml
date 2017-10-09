@@ -1,42 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ldb.bin.firstdayfresher.VideoPlay">
 
-    <RelativeLayout
-        android:orientation="vertical"
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/player_view"
+        android:focusable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="false"
-        android:id="@+id/screen">
+        android:layout_height="match_parent"/>
 
-        <Button
-            android:id="@+id/close"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:elevation="0dp"
-            android:text="X"
-            android:textColor="#ba0a0a"
-            android:gravity="center"
-            android:background="#e3ffffff"
-            android:textSize="25sp" />
-        <com.google.android.exoplayer.AspectRatioFrameLayout
-            android:id="@+id/video_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:foregroundGravity="center">
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/player_view"
+        />
 
-            <SurfaceView android:id="@+id/surface_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"/>
 
-        </com.google.android.exoplayer.AspectRatioFrameLayout>
 
-    </RelativeLayout>
 </RelativeLayout>
